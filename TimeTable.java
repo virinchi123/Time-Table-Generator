@@ -1,4 +1,5 @@
 import java.util.*;
+import Logger.SystemLog;
 import java.io.*;
 public class TimeTable {
 Slot[] tt= new Slot[90];
@@ -32,7 +33,7 @@ public boolean check(TheoryOption a)//Checks if it is possible to take a particu
 	}
 	return true;
 }
-public int addCourse(Course a)
+public int addCourse(Course a)//adds a course
 {
 	courses.add(a);
 	return 0;
@@ -72,7 +73,7 @@ public int whiten(Slot a)//marks a slot as free
 	this.tt[a.number].taken=false;
 	return 0;
 }
-public int plop(Course a)
+public boolean plop(Course a)
 {
 	Iterator<Course> CourseIterator = this.courses.iterator();
 	while(CourseIterator.hasNext())
@@ -98,11 +99,13 @@ public int plop(Course a)
 		}
 		darken(CurrentCourse.theorys[j]);
 	}
-	return 0;
+	return true;
 }
-public boolean fit(Course a)
+public boolean fit(Course a) throws IOException
 {
-	System.out.println("hi");
+	try {
+	SystemLog log = new SystemLog("C:\\xampp\\htdocs\\log.txt");
+	log.log("fit function entered for course "+a.name);
 	int l=0,m=0,x=0,y=0;
 	while(x<a.count)
 	{
@@ -133,25 +136,55 @@ public boolean fit(Course a)
 		return false;
 	}
 	return true;
+	}
+	catch(IOException e)
+	{
+		System.out.println(e);
+		return false;
+	}
 }
 public void print() throws IOException
 {
-	System.out.println("hit");
+	try {
+	SystemLog log=new SystemLog("C:\\xampp\\htdocs\\log.txt");
+	log.log("Print function executed");
 	String str=new String();
-	FileWriter fl = new FileWriter("C:\\xampp\\htdocs\\test\\output.txt");
+	String OutputFilePath = new String("C:\\xampp\\htdocs\\output.txt");
+	File OutputFile=new File(OutputFilePath);
+	log.log("File object created");
+	if(OutputFile.exists()==false)
+	{
+		System.out.println("Creating output file...");
+		log.log("Creating output file with path "+OutputFilePath);
+		OutputFile.createNewFile();
+		System.out.println("Output file created.");
+		log.log("Output file created at "+OutputFilePath);
+	}
+	FileWriter fl = new FileWriter(OutputFile,true);
 	for(int i=1;i<=60;i++)
 	{
 		if(tt[i].taken)
 		{
-			str=i+" "+tt[i].course+"\n";
+			str=i+" "+tt[i].course+"\r\n";
+			fl.write(str);
+		}
+		else
+		{
+			str=i+"\r\n";
 			fl.write(str);
 		}
 	}
 	fl.write("---------------------------------------------------------------------------------------------\r\n");
 	fl.close();
+	}
+	catch(IOException e)
+	{
+		System.out.println(e);
+	}
 }
-public int plops(int i) throws IOException
+public boolean plops(int i) throws IOException
 {
+	try {
 	if(i==0)
 	{
 	Iterator<Course> CourseIterator = this.courses.iterator();
@@ -160,7 +193,8 @@ public int plops(int i) throws IOException
 		Course course=CourseIterator.next();
 		if(this.fit(course)==false)
 		{
-			System.out.println("his");
+			SystemLog log = new SystemLog("C:\\xampp\\htdocs\\log.txt");
+			log.log("inside plops method");
 			if(CourseIterator.hasNext()==false)
 			{
 				this.print();
@@ -168,6 +202,12 @@ public int plops(int i) throws IOException
 		}
 	}
 	}
-	return 0;
+	return true;
+	}
+	catch(IOException e)
+	{
+		System.out.println(e);
+		return false;
+	}
 }
 }

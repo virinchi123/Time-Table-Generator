@@ -1,4 +1,4 @@
-
+import Logger.SystemLog;
 public class Slot {
 int number;
 boolean taken=false;

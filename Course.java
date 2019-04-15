@@ -1,4 +1,4 @@
-
+import Logger.SystemLog;
 public class Course {
 	boolean theory,lab;
 	int count=0,j=0;

@@ -1,28 +1,30 @@
 import java.io.BufferedReader;
+import Logger.SystemLog;
 import java.io.FileReader;
 import java.io.*;
 import java.util.*;
 public class Parser {
 public static void main(String args[]) throws IOException
 {
-	FileReader read = new FileReader("C:\\xampp\\htdocs\\test\\testfile.txt");
+	String ReadPath=new String("C:\\xampp\\htdocs\\test\\testfile.txt");//Input file path
+	FileReader read = new FileReader(ReadPath);
 	BufferedReader br = new BufferedReader(read);
 	ArrayList<Course> courses = new ArrayList<Course>();
 	while(br.ready())
 	{
 	String a=br.readLine();
-	int i=0;
+	int IterationNumber=0;
 	System.out.println(a);
 	Course course = new Course();
 	StringTokenizer st1 = new StringTokenizer(a,"?");
 	while(st1.hasMoreTokens())
 	{
 		String b=st1.nextToken();
-		if(i==0)
+		if(IterationNumber==0)//Reads course name
 		{
 			course.name=b;
 		}
-		else if(i==1)
+		else if(IterationNumber==1)//Reads Theory Options
 		{
 			StringTokenizer st2 = new StringTokenizer(b,";");
 			while(st2.hasMoreTokens())
@@ -33,7 +35,7 @@ public static void main(String args[]) throws IOException
 				course.add(theory, 0);
 			}
 		}
-		else
+		else//reads Lab options
 		{
 			StringTokenizer st2 = new StringTokenizer(b,";");
 			while(st2.hasMoreTokens())
@@ -44,7 +46,7 @@ public static void main(String args[]) throws IOException
 			}
 		}
 		courses.add(course);
-		i++;
+		IterationNumber++;
 	}
 
 	}

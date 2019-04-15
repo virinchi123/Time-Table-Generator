@@ -1,5 +1,5 @@
 import java.util.StringTokenizer;
-import java.util.ArrayList;
+import Logger.SystemLog;
 public class T2LMapper {
 public String map(String a)//Converts theory slots into strings of format "1+2"
 {
