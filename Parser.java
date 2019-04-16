@@ -10,6 +10,7 @@ public static void main(String args[]) throws IOException
 	FileReader read = new FileReader(ReadPath);
 	BufferedReader br = new BufferedReader(read);
 	ArrayList<Course> courses = new ArrayList<Course>();
+	SystemLog log = new SystemLog("C:\\xampp\\htdocs\\log.txt");
 	while(br.ready())
 	{
 	String a=br.readLine();
@@ -35,7 +36,7 @@ public static void main(String args[]) throws IOException
 				course.add(theory, 0);
 			}
 		}
-		else//reads Lab options
+		else if(IterationNumber==2)//reads Lab options
 		{
 			StringTokenizer st2 = new StringTokenizer(b,";");
 			while(st2.hasMoreTokens())
@@ -44,12 +45,19 @@ public static void main(String args[]) throws IOException
 				TheoryOption lab=new TheoryOption(x);
 				course.add(lab, 1);
 			}
-		}
 		courses.add(course);
+		log.log("Adding course "+course.name+" to course list");
+		}
 		IterationNumber++;
 	}
 
 	}
+	/*Iterator<Course> iterator = courses.iterator();
+	while(iterator.hasNext())//debugging code to print out list of courses in course list
+	{
+		Course as =iterator.next();
+		System.out.println(as.name);
+	}*/
 	br.close();
 	TimeTable time=new TimeTable(courses);
 	time.plops(0);

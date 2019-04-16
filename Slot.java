@@ -11,9 +11,9 @@ public Slot(int n)
 {
 	number=n;
 }
-public int toggle()
+/*public int toggle()//deprecated
 {
 	taken=!taken;
 	return 0;
-}
+}*/
 }

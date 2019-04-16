@@ -8,17 +8,17 @@ public TimeTable(ArrayList<Course> courses)
 {
 	this.courses=courses;
 	int i=0;
-	Slot c=new Slot(-1);
+	//Slot c=new Slot(-1);
 	for(i=0;i<90;i++)
 	{
-		tt[i]=c;
+		tt[i]=new Slot(i);
 	}
 }
-public int toggle(int n)
+/*public int toggle(int n)//deprecated
 {
 	tt[n].toggle();
 	return 0;
-}
+}*/
 public boolean check(TheoryOption a)//Checks if it is possible to take a particular TheoryOption
 {
 	Iterator<Slot> iterator = a.option.iterator();
@@ -33,22 +33,30 @@ public boolean check(TheoryOption a)//Checks if it is possible to take a particu
 	}
 	return true;
 }
-public int addCourse(Course a)//adds a course
+public void addCourse(Course a)//adds a course
 {
 	courses.add(a);
-	return 0;
 }
-public int darken(Slot a,String name)//marks a slot as taken
+public boolean darken(Slot a,String name) throws IOException//marks a slot as taken
 {
+	try {
+	SystemLog log=new SystemLog("C:\\xampp\\htdocs\\log.txt");
+	log.log("Darkening "+a.number);
 	this.tt[a.number].taken=true;
 	this.tt[a.number].course=name;
-	return 0;
+	return true;
+	}catch(IOException e)
+	{
+		System.out.println(e);
+		return false;
+	}
 }
-public int darken(TheoryOption a)//marks a TheoryOption as taken
+public boolean darken(TheoryOption a) throws IOException//marks a TheoryOption as taken
 {
+	try {
 	if(!this.check(a))
 	{
-		return 1;
+		return false;//check this
 	}
 	Iterator<Slot> iterator=a.option.iterator();
 	while (iterator.hasNext())
@@ -56,24 +64,48 @@ public int darken(TheoryOption a)//marks a TheoryOption as taken
 		Slot slot=iterator.next();
 		this.darken(slot,a.course);
 	}
-	return 0;
+	return true;
+	}catch(IOException e)
+	{
+		System.out.println(e);
+		return false;
+	}
 }
-public int whiten(TheoryOption a)//marks a TheoryOption as free
+public boolean whiten(Slot a,String name) throws IOException//marks a slot as free
 {
+	try {
+	SystemLog log=new SystemLog("C:\\xampp\\htdocs\\log.txt");
+	log.log("Whitening "+a.number);
+	this.tt[a.number].taken=false;
+	this.tt[a.number].course=name;
+	return true;
+	}catch(IOException e)
+	{
+		System.out.println(e);
+		return false;
+	}
+}
+public boolean whiten(TheoryOption a) throws IOException//marks a TheoryOption as free
+{
+	try {
+	if(!this.check(a))
+	{
+		return false;//check this
+	}
 	Iterator<Slot> iterator=a.option.iterator();
 	while (iterator.hasNext())
 	{
 		Slot slot=iterator.next();
-		this.whiten(slot);
+		this.whiten(slot,a.course);
 	}
-	return 0;
+	return true;
+	}catch(IOException e)
+	{
+		System.out.println(e);
+		return false;
+	}
 }
-public int whiten(Slot a)//marks a slot as free
-{
-	this.tt[a.number].taken=false;
-	return 0;
-}
-public boolean plop(Course a)
+public boolean plop(Course a) throws IOException// not used
 {
 	Iterator<Course> CourseIterator = this.courses.iterator();
 	while(CourseIterator.hasNext())
@@ -123,9 +155,9 @@ public boolean fit(Course a) throws IOException
 	}
 	while(y<a.j)
 	{
-		if(this.check(a.theorys[y]))
+		if(this.check(a.labs[y]))
 		{
-			this.darken(a.theorys[y]);
+			this.darken(a.labs[y]);
 			m=1;
 			break;
 		}
@@ -187,19 +219,18 @@ public boolean plops(int i) throws IOException
 	try {
 	if(i==0)
 	{
+	SystemLog log = new SystemLog("C:\\xampp\\htdocs\\log.txt");
 	Iterator<Course> CourseIterator = this.courses.iterator();
 	while(CourseIterator.hasNext())
 	{
 		Course course=CourseIterator.next();
-		if(this.fit(course)==false)
-		{
-			SystemLog log = new SystemLog("C:\\xampp\\htdocs\\log.txt");
+		log.log("going to fit "+course.name);
+			this.fit(course);
 			log.log("inside plops method");
 			if(CourseIterator.hasNext()==false)
 			{
 				this.print();
 			}
-		}
 	}
 	}
 	return true;
